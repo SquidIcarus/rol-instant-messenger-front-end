@@ -11,9 +11,27 @@ const getAuthHeaders = () => {
     return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+// GET BUDDY LIST
+
 export const getBuddies = async () => {
     try {
         const res = await axios.get(`${BASE_URL}/buddies`, {
+            headers: getAuthHeaders()
+        });
+        return res.data;
+    } catch (err) {
+        if (err.response && err.response.data) {
+            throw new Error(err.response.data.err);
+        }
+        throw new Error('Network error, please try again');
+    }
+};
+
+// REMOVE BUDDY
+
+export const removeBuddy = async (buddyId) => {
+    try {
+        const res = await axios.delete(`${BASE_URL}/buddies/${buddyId}`, {
             headers: getAuthHeaders()
         });
         return res.data;
