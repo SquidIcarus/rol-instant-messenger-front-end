@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { signUp } from '../../services/authServices';
 
 const SignUpForm = () => {
     const navigate = useNavigate();
@@ -19,8 +20,12 @@ const SignUpForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form submitted!');
-        console.log(formData);
+        try {
+            const newUser = await signUp(formData);
+            console.log(newUser);
+        } catch (err) {
+            setMessage(err.message);
+        }
     };
 
     const isFormInvalid = () => {
