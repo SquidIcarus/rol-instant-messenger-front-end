@@ -46,7 +46,7 @@ const signIn = async (formData) => {
         if (err.res && err.res.data && err.res.data.err) {
             throw new Error(err.res.data.err);
         }
-        throw new Error('Netword error, please try again');
+        throw new Error('Network error, please try again');
     }
 };
 
