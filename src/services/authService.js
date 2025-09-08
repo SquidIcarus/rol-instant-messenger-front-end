@@ -22,7 +22,7 @@ const signUp = async (formData) => {
         if (err.response && err.response.data && err.response.data.err) {
             throw new Error(err.response.data.err);
         }
-        throw new Error('Netword error - please try again');
+        throw new Error('Network error - please try again');
     }
 };
 
