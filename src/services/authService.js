@@ -43,8 +43,8 @@ const signIn = async (formData) => {
         throw new Error('No token received from server');
     } catch (err) {
         console.error('Sign in error:', err);
-        if (err.res && err.res.data && err.res.data.err) {
-            throw new Error(err.res.data.err);
+        if (err.res && err.response.data && err.response.data.err) {
+            throw new Error(err.response.data.err);
         }
         throw new Error('Network error, please try again');
     }
