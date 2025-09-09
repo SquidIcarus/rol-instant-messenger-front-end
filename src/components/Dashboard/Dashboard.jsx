@@ -28,6 +28,10 @@ const Dashboard = () => {
         if (user) fetchBuddies();
     }, [user]);
 
+    const isBuddy = (userScreenName) => {
+        return buddies.some(buddy => buddy.friend_user_id.screen_name === userScreenName);
+    };
+
     const handleRemoveBuddy = async (buddyId, buddyName) => {
         if (!window.confirm(`Are you sure you want to remove ${buddyName} from your buddies list?`)) {
             return;
@@ -38,6 +42,20 @@ const Dashboard = () => {
 
         try {
             const result = await userService.removeBuddy(buddyId);
+            setMessage(result.message);
+
+            const updatedBuddies = await userService.getBuddies();
+            setBuddies(updatedBuddies);
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    const handleAddBuddy = async (userScreenName) => {
+        setError('');
+        setMessage('');
+        try {
+            const result = await userService.addBuddy(userScreenName);
             setMessage(result.message);
 
             const updatedBuddies = await userService.getBuddies();
@@ -73,12 +91,20 @@ const Dashboard = () => {
             )}
             <h2>All Registered Users</h2>
             {allUsers.length === 0 ? (
-                <p>No other useres yet.</p>
+                <p>No other users yet.</p>
             ) : (
                 <ul>
-                    {allUsers.map((user) => (
-                        <li key={user._id}>
-                            {user.screen_name}
+                    {allUsers.map((otherUser) => (
+                        <li key={otherUser._id}>
+                            {otherUser.screen_name}
+                            {' '}
+                            {isBuddy(otherUser.screen_name) ? (
+                                <span>(Already a buddy)</span>
+                            ) : (
+                                <button onClick={() => handleAddBuddy(otherUser.screen_name)}>
+                                    Add Buddy
+                                </button>
+                            )}
                         </li>
                     ))}
                 </ul>

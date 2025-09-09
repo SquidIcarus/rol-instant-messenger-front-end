@@ -42,6 +42,23 @@ export const getBuddies = async () => {
     }
 };
 
+// ADD BUDDY
+
+export const addBuddy = async (friend_screen_name) => {
+    try {
+        const res = await axios.post(`${BASE_URL}/buddies`,
+            { friend_screen_name },
+            { headers: getAuthHeaders() }
+        );
+        return res.data;
+    } catch (err) {
+        if (err.response && err.response.data) {
+            throw new Error(err.response.data.err);
+        }
+        throw new Error('Network error, please try again');
+    }
+};
+
 // REMOVE BUDDY
 
 export const removeBuddy = async (buddyId) => {
