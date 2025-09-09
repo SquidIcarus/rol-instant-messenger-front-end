@@ -127,16 +127,11 @@ const Dashboard = () => {
     return (
         <main>
             <h1>Welcome, {user.screen_name}</h1>
-            <p>Find your buddies here!</p>
 
-            {message && <p>{message}</p>}
-            {error && <p>Error: {error}</p>}
-
-            <h2>Send a Message</h2>
+            <h3>Send a Message Here!</h3>
             <form onSubmit={handleSendMessage}>
                 <div>
                     <label>
-                        To (screen Name):
                         <input
                             type='text'
                             name='recipient'
@@ -149,7 +144,6 @@ const Dashboard = () => {
                 </div>
                 <div>
                     <label>
-                        Message:
                         <textarea
                             name="content"
                             value={messageForm.content}
@@ -163,36 +157,15 @@ const Dashboard = () => {
                 <button type='submit'>Send Message</button>
             </form>
 
-            <h2>Your Buddies</h2>
-            {buddies.length === 0 ? (
-                <p>No buddies yet.</p>
-            ) : (
-                <ul>
-                    {buddies.map((buddy) => (
-                        <li key={buddy._id}>
-                            {buddy.friend_user_id.screen_name}
-                            {' '}
-                            <button onClick={() => handleViewMessages(buddy.friend_user_id.screen_name)}>
-                                ✉️
-                            </button>
-                            {' '}
-                            <button onClick={() => handleRemoveBuddy(buddy._id, buddy.friend_user_id.screen_name)}>
-                                🗑️
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            )}
-
             {selectedBuddy && (
-                <div>
+                <div style={{ border: '1px solid #ffffffff', padding: '10px', maxHeight: '300px', overflowY: 'scroll' }}>
                     <h3>Messages with {selectedBuddy}</h3>
                     {loadingMessages ? (
                         <p>Loading messages...</p>
                     ) : messages.length === 0 ? (
                         <p>No messages yet. Send the first message!</p>
                     ) : (
-                        <div style={{ border: '1px solid #ffffffff', padding: '10px', maxHeight: '300px', overflowY: 'scroll' }}>
+                        <div>
                             {messages.map((msg) => (
                                 <div key={msg._id} style={{ color: 'black', marginBottom: '10px', padding: '5px', backgroundColor: msg.sender_id.screen_name === user.screen_name ? '#e3f2fd' : '#f5f5f5' }}>
                                     <strong>{msg.sender_id.screen_name}:</strong> {msg.message_content}
@@ -202,10 +175,43 @@ const Dashboard = () => {
                             ))}
                         </div>
                     )}
-                    <button onClick={() => handleViewMessages(selectedBuddy)} style={{ marginTop: '10px' }}>
+                    <button onClick={() => handleViewMessages(selectedBuddy)}>
                         Refresh Messages
                     </button>
                 </div>
+            )}
+
+            <h2>Your Buddies</h2>
+            {buddies.length === 0 ? (
+                <p>No buddies yet.</p>
+            ) : (
+                <ul>
+                    {buddies.map((buddy) => (
+                        <li key={buddy._id}>
+                            {buddy.friend_user_id ? (
+                                <>
+                                    {buddy.friend_user_id.screen_name}
+                                    {' '}
+                                    <button onClick={() => handleViewMessages(buddy.friend_user_id.screen_name)}>
+                                        ✉️
+                                    </button>
+                                    {' '}
+                                    <button onClick={() => handleRemoveBuddy(buddy._id, buddy.friend_user_id.screen_name)}>
+                                        🗑️
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    [Deleted User]
+                                    {' '}
+                                    <button onClick={() => handleRemoveBuddy(buddy._id, 'Deleted User')}>
+                                        Remove
+                                    </button>
+                                </>
+                            )}
+                        </li>
+                    ))}
+                </ul>
             )}
 
             <h2>All Registered Users</h2>
@@ -218,7 +224,7 @@ const Dashboard = () => {
                             {otherUser.screen_name}
                             {' '}
                             {isBuddy(otherUser.screen_name) ? (
-                                <span>(😎)</span>
+                                <span>😎</span>
                             ) : (
                                 <button onClick={() => handleAddBuddy(otherUser.screen_name)}>
                                     Add Buddy
