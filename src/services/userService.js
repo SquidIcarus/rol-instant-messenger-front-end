@@ -11,6 +11,21 @@ const getAuthHeaders = () => {
     return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+// GET ALL USERS
+export const getAllUsers = async () => {
+    try {
+        const res = await axios.get(`${BASE_URL}/users`, {
+            headers: getAuthHeaders()
+        });
+        return res.data;
+    } catch (err) {
+        if (err.response && err.response.data) {
+            throw new Error(err.response.data.err);
+        }
+        throw new Error('Network error, please try again');
+    }
+};
+
 // GET BUDDY LIST
 
 export const getBuddies = async () => {

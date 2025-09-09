@@ -5,6 +5,7 @@ import * as userService from '../../services/userService';
 const Dashboard = () => {
     const { user } = useContext(UserContext);
     const [buddies, setBuddies] = useState([]);
+    const [allUsers, setAllUsers] = useState([]);
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
@@ -14,6 +15,10 @@ const Dashboard = () => {
                 const fetchedBuddies = await userService.getBuddies();
                 console.log('My buddies:', fetchedBuddies);
                 setBuddies(fetchedBuddies);
+
+                const fetchedUsers = await userService.getAllUsers();
+                console.log('All users:', fetchedUsers);
+                setAllUsers(fetchedUsers);
             } catch (err) {
                 console.log(err);
                 setError(err.message);
@@ -62,6 +67,18 @@ const Dashboard = () => {
                             <button onClick={() => handleRemoveBuddy(buddy._id, buddy.friend_user_id.screen_name)}>
                                 Remove
                             </button>
+                        </li>
+                    ))}
+                </ul>
+            )}
+            <h2>All Registered Users</h2>
+            {allUsers.length === 0 ? (
+                <p>No other useres yet.</p>
+            ) : (
+                <ul>
+                    {allUsers.map((user) => (
+                        <li key={user._id}>
+                            {user.screen_name}
                         </li>
                     ))}
                 </ul>
